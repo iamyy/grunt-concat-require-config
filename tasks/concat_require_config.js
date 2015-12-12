@@ -8,6 +8,9 @@
 
 'use strict';
 
+var crypto = require('crypto');
+var fs = require('fs');
+
 module.exports = function (grunt) {
 
   // Please see the Grunt documentation for more information regarding task
@@ -54,7 +57,16 @@ module.exports = function (grunt) {
           }
       }
 
-      grunt.file.write( file.dest, 'requirejs.config(' +  JSON.stringify( configJSON ) + ');' );
+      var hash = '',
+          suffix = '';
+      if( options.algorithm && options.length ){
+        hash = crypto.createHash( options.algorithm ).update('requirejs.config(' +  JSON.stringify( configJSON ) + ');').digest('hex');;
+        suffix = hash.slice(0, options.length);
+        grunt.file.delete( file.dest );
+      }
+      
+      grunt.file.write( suffix + '.' + file.dest, 'requirejs.config(' +  JSON.stringify( configJSON ) + ');' );
+      
      
     });
   });

@@ -37,6 +37,8 @@ module.exports = function (grunt) {
       build : {
 
         options : {
+          algorithm : 'md5',
+          length : 8,
           map : {
             "Common" : [ "Backbone", "UI" ]
           }
