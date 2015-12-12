@@ -37,11 +37,33 @@ module.exports = function (grunt) {
       var configJSONStr = requireConfigFile.substr( bIndex, eIndex - bIndex + 1 ),
           configJSON = eval("("+configJSONStr+")");
 
+
+      if( options.algorithm && options.length ){
+        for( var m in options.map ){
+          var path = options.map[ m ].path;
+
+          // 计算合并的文件版本号
+          var hash = '',
+            suffix = '';
+            hash = crypto.createHash( options.algorithm ).update( fs.readFileSync(path) ).digest('hex');;
+            suffix = hash.slice(0, options.length);
+
+          // 给合并的文件重命名（添加版本号）
+          grunt.file.write( suffix + '.' + path, grunt.file.read( path ) );
+
+          grunt.log.writeln( path + ' >>> ' + suffix + '.' + path );
+
+          options.map[ suffix + '.' + m ] = options.map[ m ];
+          delete options.map[ m ];
+        }
+      }
+
       // 处理 paths
       for( var module in configJSON.paths ){
           for( var key in options.map ){
-            if( options.map[ key ].indexOf( module ) != -1 ){
+            if( options.map[ key ].include.indexOf( module ) != -1 ){
                configJSON.paths[ module ] = key;
+               grunt.log.writeln( "MODULE: " + module + ' ---> MODULE: ' + key );
                continue;
             }
           }
@@ -50,22 +72,14 @@ module.exports = function (grunt) {
       // 处理 shim
       for( var module in configJSON.shim ){
         for( var key in options.map ){
-            if( options.map[ key ].indexOf( module ) != -1 ){
+            if( options.map[ key ].include.indexOf( module ) != -1 ){
                delete configJSON.shim[ module ];
                continue;
             }
           }
       }
 
-      var hash = '',
-          suffix = '';
-      if( options.algorithm && options.length ){
-        hash = crypto.createHash( options.algorithm ).update('requirejs.config(' +  JSON.stringify( configJSON ) + ');').digest('hex');;
-        suffix = hash.slice(0, options.length);
-        grunt.file.delete( file.dest );
-      }
-      
-      grunt.file.write( suffix + '.' + file.dest, 'requirejs.config(' +  JSON.stringify( configJSON ) + ');' );
+      grunt.file.write( file.dest, 'requirejs.config(' +  JSON.stringify( configJSON ) + ');' );
       
      
     });

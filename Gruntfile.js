@@ -40,7 +40,10 @@ module.exports = function (grunt) {
           algorithm : 'md5',
           length : 8,
           map : {
-            "Common" : [ "Backbone", "UI" ]
+            "common" : { 
+              path : 'common.js',
+              include : [ "Backbone", "UI" ]
+            }
           }
         },
         dest : "testConfig.js"
