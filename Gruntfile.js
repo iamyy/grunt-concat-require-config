@@ -39,9 +39,10 @@ module.exports = function (grunt) {
         options : {
           algorithm : 'md5',
           length : 8,
+          deleteOriginCombo : true,
           map : {
             "common" : { 
-              path : 'common.js',
+              path : './common.js',
               include : [ "Backbone", "UI" ]
             }
           }

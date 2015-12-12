@@ -49,11 +49,21 @@ module.exports = function (grunt) {
             suffix = hash.slice(0, options.length);
 
           // 给合并的文件重命名（添加版本号）
-          grunt.file.write( suffix + '.' + path, grunt.file.read( path ) );
+          var splitPath = path.split( '/' );
+          var fileName = suffix + '.' + splitPath[ splitPath.length - 1 ];
+          splitPath.pop();
+          var filePath = splitPath.join( '/' );
 
-          grunt.log.writeln( path + ' >>> ' + suffix + '.' + path );
+          grunt.file.write(  filePath + '/' + fileName, grunt.file.read( path ) );
+
+          grunt.log.writeln( path + ' >>> ' + filePath + '/' + fileName );
 
           options.map[ suffix + '.' + m ] = options.map[ m ];
+
+          if( options.deleteOriginCombo ){
+            grunt.file.delete( path );
+            grunt.log.writeln( path + ' has been deleted.' );
+          }
           delete options.map[ m ];
         }
       }

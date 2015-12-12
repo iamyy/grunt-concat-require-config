@@ -1,6 +1,6 @@
 {
   "name": "grunt-concat-require-config",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Handle the config file of require in your project which using grunt-contrib-requirejs for optimizing.",
   "homepage": "https://github.com/iamyy/grunt-concat-require-config",
   "repository": "https://github.com/iamyy/grunt-concat-require-config.git",
